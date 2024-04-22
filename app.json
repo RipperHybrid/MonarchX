@@ -1,0 +1,48 @@
+{
+  "name": "MonarchX",
+  "description": "Telegram User Bot using Pyrogram formwork",
+  "logo": "https://graph.org/file/f6c6894e217e5a2317561.jpg",
+  "repository": "https://github.com/RipperHybrid/MonarchX",
+  "env": {
+    "API_ID": {
+      "description": "api id get from my.telegram.org/apps",
+      "value": "29435369",
+      "required": true
+    },
+    "API_HASH": {
+      "description": "api hash get from my.telegram.org/app",
+      "value": "dad112014794e980e5fb7815c709b5a6",
+      "required": true
+    },
+    "SESSION": {
+      "description": "Pyrogram String Session",
+      "value": "",
+      "required": true
+    },
+    "TOKEN": {
+      "description": "create your bot in @botfather",
+      "value": "6460948155:AAEYtfb3Ej9rZqWc3utGhGr5g3lXV7FWiwc",
+      "required": true
+    },
+    "OWNER_ID": {
+      "description": "Add IDs of owners",
+      "value": "6211441287",
+      "required": true
+    },
+    "GROUP_ID": {
+      "description": "Add group ID where bot must be admin and userbot must be there.",
+      "value": "-1002006234027",
+      "required": true
+    },
+    "DB_NAME": {
+      "description": "Add MongoDB Name (any).",
+      "value": "MonarchX",
+      "required": true
+    },
+    "DB_URL": {
+      "description": "Add MongoDB URI.",
+      "value": "mongodb+srv://ash:01190119@cluster0.eudnbi2.mongodb.net/?retryWrites=true&w=majority",
+      "required": true
+    }
+  }
+}
