@@ -1,5 +1,5 @@
 pyrogram
-pymongo==4.3.3
+pymongo
 pymongo[srv]
 asyncio==3.4.3
 gpytranslate==1.5.1
@@ -13,7 +13,7 @@ yt_dlp
 ffmpeg-python
 play_scraper
 beautifulsoup4>=4.9.1
-Pillow==9.0.1
+Pillow
 pytz==2023.3
 pytube
 youtube_dl
