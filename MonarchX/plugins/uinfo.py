@@ -43,7 +43,7 @@ async def whois(client, message):
         f"**User ID**: `{user.id}`\n"
         f"**First Name**: `{user.first_name}`\n"
         f"**Last Name**: `{user.last_name or ''}`\n"
-        f"**Username**: `{user.username or ''}`\n"
+        f"**Username**: `@{user.username or ''}`\n"
         f"**DC**: `{user.dc_id or '1'}`\n"
         f"**Status**: `{user.status or 'None'}`\n"
         f"**Is Scam**: `{user.is_scam}`\n"

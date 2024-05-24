@@ -79,18 +79,6 @@ ydl_opts = {
 }        
 
 
-
-__mod_name__ = "UTHOOB"  
-    
-__help__ = """  
-- song: get a song from yt
-- video: get video from yt
-"""  
-    
-    
-string = {"module": __mod_name__, "help": __help__}   
-MODULE.append(string)
-
 add_command_help(
     "ytdl",
     [
