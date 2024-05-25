@@ -4,7 +4,8 @@ MonarchX is a versatile Telegram User Bot built using the Pyrogram framework. It
 
 ## Features:
 - Song downloads
-- Sangmata locks
+- Sangmata
+- Group Managment
 - Various utility functions
 
 ## Deployment Information
