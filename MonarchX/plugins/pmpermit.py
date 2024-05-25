@@ -1,17 +1,14 @@
 from pyrogram import filters
 import asyncio
-from pyrogram.methods import messages
 from MonarchX import MonarchX 
 from MonarchX.helpers.help_func import get_arg, denied_users
 import MonarchX.MonarchX_db.pm_db as Zectdb
 from config import HANDLER, OWNER_ID
 from .help import add_command_help
 
-
 FLOOD_CTRL = 0
 ALLOWED = []
 USERS_AND_WARNS = {}
-
 
 @MonarchX.on_message(filters.command("pmguard", HANDLER) & filters.me)
 async def pmguard(client, message):
@@ -26,16 +23,14 @@ async def pmguard(client, message):
         await Zectdb.set_pm(True)
         await message.edit("**PM Guard Activated**")
 
-
 @MonarchX.on_message(filters.command("setlimit", HANDLER) & filters.me)
-async def pmguard(client, message):
+async def setlimit(client, message):
     arg = get_arg(message)
     if not arg:
         await message.edit("**Set limit to what?**")
         return
     await Zectdb.set_limit(int(arg))
     await message.edit(f"**Limit set to {arg}**")
-
 
 @MonarchX.on_message(filters.command("setpmmsg", HANDLER) & filters.me)
 async def setpmmsg(client, message):
@@ -50,9 +45,8 @@ async def setpmmsg(client, message):
     await Zectdb.set_permit_message(f"`{arg}`")
     await message.edit("**Custom anti-pm message set**")
 
-
 @MonarchX.on_message(filters.command("setblockmsg", HANDLER) & filters.me)
-async def setpmmsg(client, message):
+async def setblockmsg(client, message):
     arg = get_arg(message)
     if not arg:
         await message.edit("**What message to set**")
@@ -64,26 +58,27 @@ async def setpmmsg(client, message):
     await Zectdb.set_block_message(f"`{arg}`")
     await message.edit("**Custom block message set**")
 
-
 @MonarchX.on_message(filters.command("allow", HANDLER) & filters.me & filters.private)
 async def allow(client, message):
     chat_id = message.chat.id
     pmpermit, pm_message, limit, block_message = await Zectdb.get_pm_settings()
     await Zectdb.allow_user(chat_id)
-    await message.edit(f"**I have allowed [you](tg://user?id={chat_id}) to PM me.**")
+    user_info = await client.get_users(chat_id)
+    first_name = user_info.first_name
+    await message.edit(f"**I have allowed [{first_name}](tg://user?id={chat_id}) to PM me.**")
     async for message in MonarchX.search_messages(
         chat_id=message.chat.id, query=pm_message, limit=1, from_user="me"
     ):
         await message.delete()
     USERS_AND_WARNS.update({chat_id: 0})
 
-
 @MonarchX.on_message(filters.command("deny", HANDLER) & filters.me & filters.private)
 async def deny(client, message):
     chat_id = message.chat.id
     await Zectdb.deny_user(chat_id)
-    await message.edit(f"**I have denied [you](tg://user?id={chat_id}) to PM me.**")
-
+    user_info = await client.get_users(chat_id)
+    first_name = user_info.first_name
+    await message.edit(f"**I have denied [{first_name}](tg://user?id={chat_id}) to PM me.**")
 
 @MonarchX.on_message(
     filters.private
@@ -106,15 +101,31 @@ async def reply_pm(client, message):
         else:
             FLOOD_CTRL = 0
             return
-        async for message in MonarchX.search_messages(
-            chat_id=message.chat.id, query=pm_message, limit=1, from_user="me"
-        ):
-            await message.delete()
         await message.reply(pm_message, disable_web_page_preview=True)
         return
-    await message.reply(block_message, disable_web_page_preview=True)
-    await MonarchX.block_user(message.chat.id)
+    user_info = await client.get_users(user)
+    first_name = user_info.first_name
+    custom_block_message = block_message.format(name=first_name)
+    await message.reply(custom_block_message, disable_web_page_preview=True)
+    await client.block_user(message.chat.id)
     USERS_AND_WARNS.update({user: 0})
+
+@MonarchX.on_message(filters.command("cleardb", HANDLER) & filters.me)
+async def cleardb(client, message):
+    await Zectdb.clear_all_db()
+    await message.edit("**All database collections have been cleared.**")
+
+@MonarchX.on_message(filters.command("showallowed", HANDLER) & filters.me)
+async def showallowed(client, message):
+    users = await Zectdb.get_approved_users()
+    user_list = []
+    for user_id in users:
+        user_info = await client.get_users(user_id)
+        first_name = user_info.first_name
+        user_link = f"[{first_name}](tg://user?id={user_id})"
+        user_list.append(user_link)
+    formatted_list = "\n".join(user_list)
+    await message.edit(f"**Allowed Users:**\n{formatted_list}")
 
 add_command_help(
     "pmguard",
@@ -125,5 +136,7 @@ add_command_help(
         ["setblockmsg", "Set a custom message for blocking PMs."],
         ["allow", "Allow a user to PM the bot."],
         ["deny", "Deny a user from PMing the bot."],
+        ["cleardb", "Clear all database collections."],
+        ["showallowed", "Show all allowed users."]
     ]
 )
